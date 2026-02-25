@@ -1,0 +1,1 @@
+Python is powerful and easy to learn. Python is widely used in data science, web development, and automation.
