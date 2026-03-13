@@ -4,13 +4,14 @@ import logging
 import os
 from datetime import datetime
 
-# Setup Logging
-
+# create logs folder
 log_folder = os.path.join(os.path.dirname(__file__), "logs")
 os.makedirs(log_folder, exist_ok=True)
 
+# define log file path
 log_path = os.path.join(log_folder, "employee.log")
 
+# configure logging
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
@@ -23,134 +24,106 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 logger.info("Program started")
 
-# Task 1 : Load Employee Dataset
+# load employee dataset
+data_path = os.path.join(os.path.dirname(__file__), "employees.csv")
+df = pd.read_csv(data_path, parse_dates=["Joining_Date"])
 
-logger.info("Loading employee dataset")
-
-df = pd.read_csv("employees.csv", parse_dates=["Joining_Date"])
-
-logger.info(f"Dataset loaded successfully. Total records: {len(df)}")
+logger.info(f"Dataset loaded successfully with {len(df)} records")
 
 print("\nSample Data:")
 print(df.head())
 
-# Task 2 : Data Cleaning
-
-logger.info("Starting data cleaning process")
-
-# Check missing values
+# check missing values
 missing_values = df.isnull().sum()
 logger.info(f"Missing values:\n{missing_values}")
 
-# Fill missing Age with median
+# fill missing age with median
 if "Age" in df.columns:
     median_age = df["Age"].median()
-    df["Age"].fillna(median_age, inplace=True)
-    logger.info(f"Missing Age values filled with median: {median_age}")
+    df["Age"].fillna(median_age)
+    logger.info(f"Filled missing Age with median {median_age}")
 
-# Fill missing Salary with mean
+# fill missing salary with mean
 if "Salary" in df.columns:
     mean_salary = df["Salary"].mean()
-    df["Salary"].fillna(mean_salary, inplace=True)
-    logger.info(f"Missing Salary values filled with mean: {mean_salary}")
+    df["Salary"].fillna(mean_salary)
+    logger.info(f"Filled missing Salary with mean {mean_salary}")
 
-# Remove duplicate employees
+# remove duplicate employee records
 before = len(df)
 df.drop_duplicates(subset=["Employee_ID"], inplace=True)
-
 removed = before - len(df)
+
 logger.info(f"Removed {removed} duplicate records")
 
-# Standardize column names
+# standardize column names
 df.columns = [col.strip().replace(" ", "_").lower() for col in df.columns]
 
-# Convert datatypes
-df["age"] = df["age"].astype(int)
+# convert column data types
+df["age"] = df["age"].round().astype(int)
 df["salary"] = df["salary"].astype(float)
 df["resigned"] = df["resigned"].astype(bool)
 df["joining_date"] = pd.to_datetime(df["joining_date"])
 
 logger.info("Data cleaning completed")
 
-# Task 3 : Data Manipulation
-
+# function to filter and manipulate employee data
 def manipulate_data(dataframe):
 
     logger.info("Starting data manipulation")
 
-    try:
-        original_count = len(dataframe)
+    before_count = len(dataframe)
 
-        # Filter employees based on conditions
-        filtered_df = dataframe[
-            ((dataframe["age"] > 25) | (dataframe["salary"] > 40000)) &
-            (dataframe["resigned"] == False)
-        ].copy()
+    filtered_df = dataframe[
+        ((dataframe["age"] > 25) | (dataframe["salary"] > 40000)) &
+        (dataframe["resigned"] == False)
+    ].copy()
 
-        filtered_count = len(filtered_df)
+    after_count = len(filtered_df)
 
-        logger.info(f"Records before filtering: {original_count}")
-        logger.info(f"Records after filtering: {filtered_count}")
+    logger.info(f"Records before filtering {before_count}")
+    logger.info(f"Records after filtering {after_count}")
 
-        # Calculate years in company
-        today = pd.Timestamp(datetime.today())
+    today = pd.Timestamp(datetime.today())
 
-        filtered_df["years_in_company"] = (
-            (today - filtered_df["joining_date"]).dt.days / 365
-        ).astype(int)
+    filtered_df["years_in_company"] = (
+        (today - filtered_df["joining_date"]).dt.days / 365
+    ).astype(int)
 
-        logger.info("Years in company column created")
+    logger.info("Years in company column created")
 
-        return filtered_df
+    return filtered_df
 
-    except Exception as error:
-        logger.error(f"Error during data manipulation: {error}")
-        raise
 
-# Task 4 : Data Analysis
-
+# function to analyze department statistics
 def analyze_data(dataframe, department="IT"):
 
     logger.info("Starting data analysis")
 
-    try:
+    stats = dataframe.groupby("department").agg(
+        average_salary=("salary", "mean"),
+        median_age=("age", "median")
+    )
 
-        # Calculate department statistics
-        department_stats = dataframe.groupby("department").agg(
-            average_salary=("salary", "mean"),
-            median_age=("age", "median")
-        )
+    print("\nDepartment Insights:")
+    print(stats)
 
-        print("\nDepartment Insights:")
-        print(department_stats)
+    logger.info("Department statistics calculated")
 
-        logger.info("Department statistics calculated")
+    dataframe.loc[dataframe["department"] == department, "salary"] *= 1.10
 
-        # Apply salary increment for selected department
-        dataframe.loc[
-            dataframe["department"] == department,
-            "salary"
-        ] *= 1.10
+    logger.info(f"10 percent salary increment applied to {department}")
 
-        logger.info(f"10% salary increment applied to {department} department")
-
-        return dataframe, department_stats
-
-    except Exception as error:
-        logger.error(f"Error during analysis: {error}")
-        raise
+    return dataframe, stats
 
 
-# Run manipulation
+# run data manipulation
 df = manipulate_data(df)
 
-# Run analysis
+# run data analysis
 df, stats = analyze_data(df)
 
-# Task 5 : Export Final Data
-
-logger.info("Preparing final dataset for export")
-
+# rename columns for final output
 df = df.rename(columns={
     "employee_id": "Employee_ID",
     "emp_name": "Name",
@@ -161,7 +134,7 @@ df = df.rename(columns={
     "salary": "Salary"
 })
 
-# Select important columns
+# keep only required columns
 df = df[
     [
         "Employee_ID",
@@ -174,15 +147,15 @@ df = df[
     ]
 ]
 
-# Sort by joining date
+# sort employees by joining date
 df = df.sort_values(by="JoiningDate", ascending=False)
 
-# Export to JSON
-output_file = "final_employee_data.json"
+# export final dataset to json
+output_file = os.path.join(os.path.dirname(__file__), "final_employee_data.json")
 
 df.to_json(output_file, orient="records", indent=4)
 
 logger.info(f"Data exported successfully to {output_file}")
-logger.info(f"Total records exported: {len(df)}")
+logger.info(f"Total records exported {len(df)}")
 
 print("\nFinal dataset exported successfully.")

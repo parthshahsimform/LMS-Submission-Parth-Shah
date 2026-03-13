@@ -2,3 +2,31 @@
 2026-03-11 16:08:46,830 - INFO - Loading employee dataset
 2026-03-11 16:11:19,525 - INFO - Program started
 2026-03-11 16:11:19,526 - INFO - Loading employee dataset
+2026-03-11 16:54:13,348 - INFO - Program started
+2026-03-11 16:54:13,355 - INFO - Dataset loaded successfully with 100 records
+2026-03-11 16:54:13,371 - INFO - Missing values:
+Employee_ID      0
+Name             0
+Age             16
+Department       0
+Salary           8
+Joining_Date     0
+Resigned         0
+dtype: int64
+2026-03-11 16:54:13,374 - INFO - Filled missing Age with median 45.5
+2026-03-11 16:54:13,375 - INFO - Filled missing Salary with mean 59643.92391304348
+2026-03-11 16:54:13,377 - INFO - Removed 0 duplicate records
+2026-03-11 17:03:25,180 - INFO - Program started
+2026-03-11 17:03:25,184 - INFO - Dataset loaded successfully with 100 records
+2026-03-11 17:03:25,195 - INFO - Missing values:
+Employee_ID      0
+Name             0
+Age             16
+Department       0
+Salary           8
+Joining_Date     0
+Resigned         0
+dtype: int64
+2026-03-11 17:03:25,196 - INFO - Filled missing Age with median 45.5
+2026-03-11 17:03:25,197 - INFO - Filled missing Salary with mean 59643.92391304348
+2026-03-11 17:03:25,198 - INFO - Removed 0 duplicate records
