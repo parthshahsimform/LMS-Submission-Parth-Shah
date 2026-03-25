@@ -1,11 +1,39 @@
 from apscheduler.schedulers.blocking import BlockingScheduler
 from datetime import datetime
+import requests
+import psycopg2
+
+
+# Function to fetch API data
+def fetch_api_data(url):
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.json()
+        else:
+            print("API request failed")
+            return None
+    except Exception as e:
+        print("API error:", e)
+        return None
+
+
+# Function to connect to database
+def get_connection():
+    return psycopg2.connect(
+        host="localhost",
+        database="your_database",
+        user="your_user",
+        password="your_password"
+    )
+
 
 def scheduled_post_fetch():
     url = "https://jsonplaceholder.typicode.com/posts"
     posts = fetch_api_data(url)
 
     if not posts:
+        print("No posts fetched")
         return
 
     conn = get_connection()
@@ -29,9 +57,13 @@ def scheduled_post_fetch():
 
     print(f"{datetime.now()} - Added {new_posts} new posts")
 
-    scheduler = BlockingScheduler()
-scheduler.add_job(scheduled_post_fetch, "interval", minutes=10)
+
+# Create scheduler
+scheduler = BlockingScheduler()
+
+# Run every 10 minutes
+scheduler.add_job(scheduled_post_fetch, "interval", seconds=10)
 
 print("Scheduler started...")
-scheduler.start()
 
+scheduler.start()
