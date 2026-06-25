@@ -62,21 +62,6 @@ Tableau Dashboard
 
 ---
 
-##  Tech Stack
-
-| Layer                  | Technology     |
-| ---------------------- | -------------- |
-| Data Generation        | Python, Faker  |
-| Data Lake Storage      | AWS S3         |
-| Data Ingestion         | Snowpipe       |
-| Data Warehouse         | Snowflake      |
-| Data Transformation    | dbt Cloud      |
-| Workflow Orchestration | Apache Airflow |
-| Visualization          | Tableau        |
-| File Format            | Parquet        |
-
----
-
 ##  Business Problem
 
 Modern e-commerce businesses generate large volumes of:
@@ -332,25 +317,6 @@ The Tableau dashboard provides visibility into:
 * Top Products
 * Returning Customer %
 * Customer Segments
-
----
-
-#  Repository Structure
-
-```text
-Ecom360/
-│
-├── data_generation/
-├── airflow/
-├── dbt/
-├── snowflake/
-├── tableau/
-├── images/
-│   └── ecom360_architecture.png
-│
-├── README.md
-└── requirements.txt
-```
 
 ---
 
