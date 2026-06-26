@@ -23,6 +23,7 @@
 
 The project demonstrates how modern data engineering technologies work together to transform raw business events into trusted analytical datasets and actionable business insights.
 
+Get additional info at : https://ecom-360.netlify.app
 ---
 
 ##  Architecture
