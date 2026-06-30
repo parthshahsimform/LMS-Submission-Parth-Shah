@@ -29,7 +29,7 @@ Get additional info at : https://ecom-360.netlify.app
 ##  Architecture
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/parthshahsimform/LMS-Submission-Parth-Shah/main/Proof%20Of%20Concept/project_architecture.png" alt="Ecom360 Architecture" width="100%">
+  <img src="https://raw.githubusercontent.com/parthshahsimform/LMS-Submission-Parth-Shah/main/Proof%20Of%20Concept/project architecture.png" alt="Ecom360 Architecture" width="100%">
 </p>
 
 ---
